@@ -12,8 +12,9 @@ import java.util.List;
 import db.dbperfcomparision.realm.model.TestObject;
 import db.dbperfcomparision.realm.model.TestSubObject;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
+import io.realm.exceptions.RealmException;
 import rx.Observable;
+import rx.Subscriber;
 
 /**
  * Created by vijay on 6/11/16.
@@ -21,19 +22,15 @@ import rx.Observable;
 
 public class RealmManager {
     private static final String TAG = RealmManager.class.getSimpleName();
-    private Realm realm;
-    private RealmConfiguration realmConfig;
     private Context context;
 
     public RealmManager(Context context) {
         this.context = context;
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder(context).build();
-        Realm.setDefaultConfiguration(realmConfig);
+
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public Observable<Realm> bulkInsert() {
-        Realm realm = Realm.getDefaultInstance();
+    public void bulkInsert(Realm realm) {
         Log.d(TAG, "start time: " + SystemClock.elapsedRealtimeNanos());
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -56,6 +53,39 @@ public class RealmManager {
                 Log.d(TAG, "end time: " + SystemClock.elapsedRealtimeNanos());
             }
         });
-        return realm.asObservable();
+    }
+
+    public rx.Observable<Boolean> bulkInsertAsync(final Realm realm) {
+        return rx.Observable.create(new rx.Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(final Subscriber<? super Boolean> subscriber) {
+                bulkInsert(realm);
+                try {
+                    if (realm != null) {
+                        realm.close();
+                    }
+                } catch (RealmException ex) {
+                    subscriber.onError(ex);
+                }
+                subscriber.onNext(true);
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    public Observable<Boolean> bulkRemove(final Realm realm) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.delete(TestObject.class);
+                    }
+                });
+                subscriber.onNext(true);
+                subscriber.onCompleted();
+            }
+        });
     }
 }
