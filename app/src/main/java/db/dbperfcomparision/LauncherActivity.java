@@ -76,8 +76,8 @@ public class LauncherActivity extends AppCompatActivity {
                 });
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void startSnappyDBBasicQuery() {
-
             binding.txtSnappyDBQuery.setText("Started snappydb query");
 
             SnappyDBManager snappyDBManager = new SnappyDBManager();
@@ -140,8 +140,8 @@ public class LauncherActivity extends AppCompatActivity {
                 });
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void startSnappyDBBulkInsert() {
-
             binding.txtSnappyDBInsert.setText("Started snappydb inserts");
             SnappyDBManager snappyDBManager = new SnappyDBManager();
             final long startTime = SystemClock.elapsedRealtimeNanos();
