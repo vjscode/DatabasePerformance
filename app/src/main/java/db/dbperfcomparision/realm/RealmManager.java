@@ -9,9 +9,11 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import db.dbperfcomparision.realm.model.TestObject;
+import db.dbperfcomparision.realm.model.RealmTestObject;
 import db.dbperfcomparision.realm.model.TestSubObject;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 import io.realm.exceptions.RealmException;
 import rx.Observable;
 import rx.Subscriber;
@@ -36,18 +38,18 @@ public class RealmManager {
             @Override
             public void execute(Realm realm) {
                 for (int i = 1; i < 1000; i++) {
-                    TestObject testObject = realm.createObject(TestObject.class);
-                    testObject.setId(i);
-                    testObject.setName("" + i);
-                    testObject.setAge(i + 100);
-                    testObject.setCreationTime(SystemClock.elapsedRealtimeNanos());
-                    testObject.setUpdatedTime(SystemClock.elapsedRealtimeNanos());
+                    RealmTestObject realmTestObject = realm.createObject(RealmTestObject.class);
+                    realmTestObject.setId(i);
+                    realmTestObject.setName("" + i);
+                    realmTestObject.setAge(i + 100);
+                    realmTestObject.setCreationTime(SystemClock.elapsedRealtimeNanos());
+                    realmTestObject.setUpdatedTime(SystemClock.elapsedRealtimeNanos());
                     List<TestSubObject> testSubObjectList = new ArrayList<>();
                     for (int j = 0; j < 100; j++) {
                         TestSubObject testSubObject = realm.createObject(TestSubObject.class);
                         testSubObject.setAge(j + 100);
                         testSubObject.setName("" + j);
-                        testObject.getSubObjects().add(testSubObject);
+                        realmTestObject.getSubObjects().add(testSubObject);
                     }
                 }
                 Log.d(TAG, "end time: " + SystemClock.elapsedRealtimeNanos());
@@ -55,10 +57,11 @@ public class RealmManager {
         });
     }
 
-    public rx.Observable<Boolean> bulkInsertAsync(final Realm realm) {
+    public rx.Observable<Boolean> bulkInsertAsync(final RealmConfiguration realmConfig) {
         return rx.Observable.create(new rx.Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(final Subscriber<? super Boolean> subscriber) {
+                final Realm realm = Realm.getInstance(realmConfig);
                 bulkInsert(realm);
                 try {
                     if (realm != null) {
@@ -73,18 +76,49 @@ public class RealmManager {
         });
     }
 
-    public Observable<Boolean> bulkRemove(final Realm realm) {
+    public Observable<Boolean> bulkRemove(final RealmConfiguration realmConfig) {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
+                final Realm realm = Realm.getInstance(realmConfig);
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        realm.delete(TestObject.class);
+                        realm.delete(RealmTestObject.class);
                     }
                 });
                 subscriber.onNext(true);
                 subscriber.onCompleted();
+            }
+        });
+    }
+
+    public Observable<Boolean> basicQuery(final RealmConfiguration realmConfig) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            boolean result = true;
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                final Realm realm = Realm.getInstance(realmConfig);
+                for (int i = 1; i < 1000; i++) {
+                    RealmResults<RealmTestObject> results = realm.where(RealmTestObject.class).equalTo("id", i).findAll();
+                    if (results.size() != 1) {
+                        result = false;
+                        break;
+                    }
+                }
+                try {
+                    if (realm != null) {
+                        realm.close();
+                        if (!result) {
+                            subscriber.onNext(false);
+                        } else {
+                            subscriber.onNext(true);
+                        }
+                        subscriber.onCompleted();
+                    }
+                } catch (RealmException ex) {
+                    subscriber.onError(ex);
+                }
             }
         });
     }
