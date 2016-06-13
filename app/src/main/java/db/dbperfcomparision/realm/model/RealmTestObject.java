@@ -22,7 +22,7 @@ public class RealmTestObject extends RealmObject {
 
     private long updatedTime;
 
-    private RealmList<TestSubObject> subObjects;
+    private RealmList<RealmTestSubObject> subObjects;
 
     public int getId() {
         return id;
@@ -72,11 +72,11 @@ public class RealmTestObject extends RealmObject {
         this.updatedTime = updatedTime;
     }
 
-    public RealmList<TestSubObject> getSubObjects() {
+    public RealmList<RealmTestSubObject> getSubObjects() {
         return subObjects;
     }
 
-    public void setSubObjects(RealmList<TestSubObject> subObjects) {
+    public void setSubObjects(RealmList<RealmTestSubObject> subObjects) {
         this.subObjects = subObjects;
     }
 }

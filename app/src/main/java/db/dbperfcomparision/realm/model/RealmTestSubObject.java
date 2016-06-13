@@ -6,7 +6,7 @@ import io.realm.RealmObject;
  * Created by vijay on 6/11/16.
  */
 
-public class TestSubObject extends RealmObject {
+public class RealmTestSubObject extends RealmObject {
     private String name;
     private int age;
 

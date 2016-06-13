@@ -141,7 +141,7 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     private void startSnappyDBBulkInsert() {
-        
+
             binding.txtSnappyDBInsert.setText("Started snappydb inserts");
             SnappyDBManager snappyDBManager = new SnappyDBManager();
             final long startTime = SystemClock.elapsedRealtimeNanos();

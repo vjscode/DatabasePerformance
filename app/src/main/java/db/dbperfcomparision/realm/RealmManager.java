@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import db.dbperfcomparision.realm.model.RealmTestObject;
-import db.dbperfcomparision.realm.model.TestSubObject;
+import db.dbperfcomparision.realm.model.RealmTestSubObject;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
@@ -44,9 +44,9 @@ public class RealmManager {
                     realmTestObject.setAge(i + 100);
                     realmTestObject.setCreationTime(SystemClock.elapsedRealtimeNanos());
                     realmTestObject.setUpdatedTime(SystemClock.elapsedRealtimeNanos());
-                    List<TestSubObject> testSubObjectList = new ArrayList<>();
+                    List<RealmTestSubObject> testSubObjectList = new ArrayList<>();
                     for (int j = 0; j < 100; j++) {
-                        TestSubObject testSubObject = realm.createObject(TestSubObject.class);
+                        RealmTestSubObject testSubObject = realm.createObject(RealmTestSubObject.class);
                         testSubObject.setAge(j + 100);
                         testSubObject.setName("" + j);
                         realmTestObject.getSubObjects().add(testSubObject);
