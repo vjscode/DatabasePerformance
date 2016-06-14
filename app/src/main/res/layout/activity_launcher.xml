@@ -88,6 +88,53 @@
         android:layout_height="40dp"
         android:id="@+id/txtSnappyDBQuery"
         app:layout_constraintLeft_toLeftOf="@+id/txtSnappyDBInsert"
+        app:layout_constraintRight_toRightOf="@+id/txtSnappyDBInsert"
         app:layout_constraintBaseline_toBaselineOf="@+id/snappyDBQuery" />
+
+    <Button
+        android:text="Sqlite Insert"
+        android:layout_width="145dp"
+        android:layout_height="52dp"
+        android:id="@+id/sqliteInsert"
+        tools:layout_editor_absoluteX="27dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtSnappyDBQuery"
+        android:layout_marginTop="8dp"
+        android:onClick="buttonClick"
+        app:layout_constraintLeft_toLeftOf="@+id/snappyDBQuery"
+        app:layout_constraintRight_toRightOf="@+id/snappyDBQuery"/>
+
+    <Button
+        android:text="Sqlite Query"
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/sqliteQuery"
+        app:layout_constraintLeft_toLeftOf="@+id/sqliteInsert"
+        app:layout_constraintTop_toBottomOf="@+id/sqliteInsert"
+        android:layout_marginTop="8dp"
+        app:layout_constraintRight_toRightOf="@+id/sqliteInsert"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_launcher"
+        android:layout_marginBottom="16dp"
+        android:onClick="buttonClick"/>
+
+    <TextView
+        android:text="5"
+        android:layout_width="156dp"
+        android:layout_height="37dp"
+        android:id="@+id/txtSqliteInsert"
+        app:layout_constraintLeft_toLeftOf="@+id/txtSnappyDBQuery"
+        app:layout_constraintRight_toRightOf="@+id/txtSnappyDBQuery"
+        app:layout_constraintBaseline_toBaselineOf="@+id/sqliteInsert"
+        app:layout_constraintHorizontal_bias="0.42" />
+
+    <TextView
+        android:text="6"
+        android:layout_width="155dp"
+        android:layout_height="35dp"
+        android:id="@+id/txtSqliteQuery"
+        app:layout_constraintLeft_toLeftOf="@+id/txtSqliteInsert"
+        app:layout_constraintTop_toBottomOf="@+id/txtSqliteInsert"
+        android:layout_marginTop="24dp"
+        app:layout_constraintRight_toRightOf="@+id/txtSqliteInsert"
+        app:layout_constraintHorizontal_bias="0.0" />
 </android.support.constraint.ConstraintLayout>
 </layout>

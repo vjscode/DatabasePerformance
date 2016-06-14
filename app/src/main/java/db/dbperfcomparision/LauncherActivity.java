@@ -9,14 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.snappydb.DB;
-import com.snappydb.DBFactory;
-import com.snappydb.SnappydbException;
-
 import db.dbperfcomparision.databinding.ActivityLauncherBinding;
 import db.dbperfcomparision.realm.RealmManager;
 import db.dbperfcomparision.snappydb.SnappyDBManager;
-import io.realm.Realm;
+import db.dbperfcomparision.sqlite.SqliteManager;
 import io.realm.RealmConfiguration;
 import rx.Observable;
 import rx.Subscriber;
@@ -43,9 +39,14 @@ public class LauncherActivity extends AppCompatActivity {
             startSnappyDBBulkInsert();
         } else if (v.getId() == R.id.snappyDBQuery) {
             startSnappyDBBasicQuery();
+        } else if (v.getId() == R.id.sqliteInsert) {
+            startSqliteBulkInsert();
+        } else if (v.getId() == R.id.sqliteQuery) {
+            startSqliteBasicQuery();
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void startRealmBasicQuery() {
         binding.txtRealmQuery.setText("Started realm query");
         RealmManager realmManager = new RealmManager(this);
@@ -168,5 +169,67 @@ public class LauncherActivity extends AppCompatActivity {
                     Log.d(TAG, "onNext: " + aBoolean);
                 }
             });
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void startSqliteBulkInsert() {
+        binding.txtSqliteInsert.setText("Started sqlite inserts");
+
+        SqliteManager sqliteManager = new SqliteManager(this);
+        final long startTime = SystemClock.elapsedRealtimeNanos();
+                sqliteManager
+                .insertTestObjects()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted");
+                        long endTime = SystemClock.elapsedRealtimeNanos();
+                        Log.d(TAG, "Total time taken by bulk inserts on Sqlite: " +
+                                (endTime - startTime));
+                        binding.txtSqliteInsert.setText((endTime - startTime) + "ns");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "onError: " + e);
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Log.d(TAG, "onNext: " + aBoolean);
+                    }
+                });
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void startSqliteBasicQuery() {
+        binding.txtSqliteQuery.setText("Started sqlite query");
+        SqliteManager sqliteManager = new SqliteManager(this);
+        final long startTime = SystemClock.elapsedRealtimeNanos();
+        sqliteManager.readTestObjects()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted");
+                        long endTime = SystemClock.elapsedRealtimeNanos();
+                        Log.d(TAG, "Total time taken by basic query on Sqlite: " +
+                                (endTime - startTime));
+                        binding.txtSqliteQuery.setText((endTime - startTime) + "ns");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "onError: " + e);
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Log.d(TAG, "onNext: " + aBoolean);
+                    }
+                });
     }
 }
