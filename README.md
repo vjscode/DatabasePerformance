@@ -5,7 +5,8 @@ Whenever you are in a position to choose a DB for your next Android app, you wou
 
 As a first step, I'm starting with Realm and SnappyDB(LevelDB) and the good old sqlite. Hope to see more including couchbase lite.
 
-Database inserts were in the form of 1000 rows, each with 100 element list in them. Check out model folder to see details of the data that are inserted.
+- Database inserts were in the form of 1000 rows, each with 100 element list in them. Check out model folder to see details of the data that are inserted.
+- Database query time includes the time to deserialize and create POJOs
 
 Operation | Database | Type | Time taken |
 ----------|----------|------|------------|
