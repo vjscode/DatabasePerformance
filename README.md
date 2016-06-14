@@ -14,5 +14,4 @@ Bulk inserts | SnappyDB | NoSQL | 16.13s |
 Bulk inserts | Sqlite | SQL | 6.13s |
 Query | Realm | NoSQL | 100.3ms |
 Query | SnappyDB | NoSQL | 20.3s |
-Query | SnappyDB | NoSQL | 20.3s |
 Query | Sqlite | SQL | 3.14s |
